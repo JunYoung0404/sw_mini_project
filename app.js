@@ -14,15 +14,11 @@ app.set('port', 3000);
 app.set("views", "views");
 app.set("view engine", "ejs");
 
-// 외부 정적 파일 경로 설정
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use('/uploads', express.static("uploads"));
-
-// POST 방식으로 파라미터 전달 받기 위한 설정
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// 쿠키 및 세션 설정
 app.use(cookieParser());
 app.use(expressSession({
     secret: 'my key',
@@ -32,9 +28,19 @@ app.use(expressSession({
 
 const router = express.Router();
 
-app.get('/', (req, res) => {
+// 영화 데이터와 리뷰를 저장할 배열
+const movies = [
+    { id: 1, title: 'movie1', image: '/images/movie1.png' },
+    { id: 2, title: 'movie2', image: '/images/movie2.png' },
+    { id: 3, title: 'movie3', image: '/images/movie3.png' },
+];
+
+const reviews = [];
+
+// 홈 페이지
+router.get('/', (req, res) => {
     if (db) {
-        db.users.find((err, result) => { 
+        db.users.find((err, result) => {
             if (err) {
                 throw err;
             }
@@ -44,20 +50,71 @@ app.get('/', (req, res) => {
                 name: data.name,
             }));
 
-            res.render('index', { members: memberList });
+            res.render('index', { movies, members: memberList });
         });
     } else {
         res.end("DB가 연결되지 않았습니다!");
     }
 });
 
+// 영화 리뷰 페이지 (리뷰 폼 포함)
+router.get('/movies/:id', (req, res) => {
+    const movieId = req.params.id;
+    const movie = movies.find(m => m.id == movieId);
+    const movieReviews = reviews.filter(r => r.movieId == movieId);
 
-router.route("/home").get((req, res) => {
-    req.app.render("home/Home", {}, (err, html) => {
-        res.end(html);
-    });
+    if (movie) {
+        res.render('review', { movie, movieReviews });
+    } else {
+        res.status(404).send('Movie not found');
+    }
 });
 
+// 리뷰 작성 처리
+router.post('/movies/:id/reviews', (req, res) => {
+    const movieId = req.params.id;
+    const { rating, comment, details } = req.body;
+
+    const newReview = {
+        id: reviews.length + 1,
+        movieId: parseInt(movieId),
+        rating,
+        comment,
+        details
+    };
+
+    reviews.push(newReview);
+    res.redirect(`/movies/${movieId}`);
+});
+
+// 리뷰 삭제
+router.post('/movies/:movieId/reviews/:reviewId/delete', (req, res) => {
+    const { movieId, reviewId } = req.params;
+    const reviewIndex = reviews.findIndex(r => r.id == reviewId && r.movieId == movieId);
+
+    if (reviewIndex !== -1) {
+        reviews.splice(reviewIndex, 1);
+    }
+    res.redirect(`/movies/${movieId}`);
+});
+
+// 리뷰 수정
+router.post('/movies/:movieId/reviews/:reviewId/edit', (req, res) => {
+    const { movieId, reviewId } = req.params;
+    const { rating, comment, details } = req.body;
+
+    const review = reviews.find(r => r.id == reviewId && r.movieId == movieId);
+
+    if (review) {
+        review.rating = rating;
+        review.comment = comment;
+        review.details = details;
+    }
+
+    res.redirect(`/movies/${movieId}`);
+});
+
+// 로그인, 로그아웃, 회원가입 관련 라우트
 router.route("/login").get((req, res) => {
     req.app.render("member/Login", {}, (err, html) => {
         res.end(html);
@@ -65,13 +122,13 @@ router.route("/login").get((req, res) => {
 });
 
 router.route("/login").post((req, res) => {
-    const { id, pw} = req.body;
-    
+    const { id, pw } = req.body;
+
     db.users.findOne({ id }, (err, user) => {
         if (err) throw err;
 
         if (user && user.pw === pw) {
-            console.log("로그인 성공!"); 
+            console.log("로그인 성공!");
 
             req.session.user = {
                 id: user.id,
@@ -79,7 +136,7 @@ router.route("/login").post((req, res) => {
                 pw: user.pw
             };
 
-            res.redirect("/index.html");
+            res.redirect("/member");
         } else {
             console.log("로그인 실패! 계정이 없거나 패스워드가 맞지 않습니다.");
             res.redirect("/login");
@@ -89,10 +146,10 @@ router.route("/login").post((req, res) => {
 
 router.route("/logout").get((req, res) => {
     console.log("GET - /logout 호출 ...");
-    
-    if(req.session.user) {
+
+    if (req.session.user) {
         req.session.destroy((err) => {
-            if(err) throw err;
+            if (err) throw err;
             console.log("로그아웃 성공!");
             res.redirect("/login");
         });
@@ -109,13 +166,43 @@ router.route("/joinus").get((req, res) => {
 });
 
 router.route("/joinus").post((req, res) => {
-    const { id, pw, name} = req.body;
-    
-    db.users.insertOne({ id: id, pw : pw, name : name}, (err, user) => {
-        if (user){console.log("회원가입 성공")} ;
+    const { id, pw, name } = req.body;
+
+    db.users.insertOne({ id: id, pw: pw, name: name }, (err, user) => {
+        if (user) {
+            console.log("회원가입 성공");
+        };
         if (err) throw err;
-        res.redirect("/index.html");
+        res.redirect("/member");
     });
+});
+
+// 멤버 페이지 (회원 목록)
+router.route("/member").get((req, res) => {
+    if (req.session.user) {
+        const user = req.session.user;
+
+        db.users.find((err, result) => {
+            if (err) {
+                throw err;
+            }
+
+            const members = result.map(data => ({
+                id: data.id,
+                password: data.pw,
+                name: data.name,
+            }));
+
+            req.app.render("member/Member", { members, user }, (err, html) => {
+                if (err) {
+                    throw err;
+                }
+                res.end(html);
+            });
+        });
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.use('/', router);
