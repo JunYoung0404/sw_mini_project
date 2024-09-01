@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User's Movie List</title>
+</head>
+<body>
+    <h1>Movies You've Watched</h1>
+    <ul>
+        <% members.forEach(function(member) { %>
+            <li>
+                <a href="/movies/<%= member.id %>">
+                    <img src="<%= member.image %>" alt="<%= member.title %>" style="width: 150px; height: 200px;">
+                    <p><%= member.title %></p>
+                </a>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>
