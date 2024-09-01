@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <hr />
+    <div class="container">
+        <h2>Member</h2>
+        <p>
+            <%= user.name%>님 반갑습니다<br/>
+            <a href="/logout">Logout</a>
+        </p>
+        <table class="table">
+            <tr>
+                <th>NAME</th>
+                <th>ID</th>
+                <th>PASSWORD</th>
+            </tr>
+                <% members.forEach(member => { %>
+                <tr>
+                    <td><%= member.name %></td>
+                    <td><%= member.id %></td>
+                    <td><%= member.password %></td>
+                </tr>
+            <% }); %>
+        </table>
+    </div>
+</body>
+</html>
