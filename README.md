@@ -19,6 +19,7 @@
 영화 리뷰 페이지
 ![9](https://github.com/user-attachments/assets/bed7e6b0-c179-4424-9f1e-296bcbb59a4e)
 영화 리뷰 추가 결과
+![10](https://github.com/user-attachments/assets/8d1ccf62-c05e-4d4e-81a4-bd773b1df213)
 
 
 
