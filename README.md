@@ -15,6 +15,8 @@
 영화 추가 결과 
 ![7](https://github.com/user-attachments/assets/e04e8063-33e8-4a85-9077-32b617d0c240)
 영화 삭제 결과
+![8](https://github.com/user-attachments/assets/c0341c8b-33bf-4f2a-9f54-606a1a7ad830)
+영화 리뷰 페이지
 
 
 
