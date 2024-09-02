@@ -9,3 +9,5 @@
 영화 리스트 페이지
 ![4](https://github.com/user-attachments/assets/90f8b1fd-e3d0-4eaa-a163-c84f5f918cd6)
 영화 추가
+![5](https://github.com/user-attachments/assets/79d305fb-da7a-4942-8050-d73c91521cd7)
+영화 추가된 화면 
