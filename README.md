@@ -13,6 +13,8 @@
 영화 추가
 ![5](https://github.com/user-attachments/assets/79d305fb-da7a-4942-8050-d73c91521cd7)
 영화 추가 결과 
+![7](https://github.com/user-attachments/assets/e04e8063-33e8-4a85-9077-32b617d0c240)
+영화 삭제 결과
 
 
 
