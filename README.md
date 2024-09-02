@@ -7,3 +7,5 @@
 서버에 가입한 회원 정보 확인
 ![3](https://github.com/user-attachments/assets/4062099e-9e0b-490a-b867-b04ca7a1733b)
 영화 리스트 페이지
+![4](https://github.com/user-attachments/assets/90f8b1fd-e3d0-4eaa-a163-c84f5f918cd6)
+영화 추가
