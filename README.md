@@ -5,3 +5,5 @@
 회원가입 화면
 ![2](https://github.com/user-attachments/assets/1d4d533f-34c1-4c3e-b8ae-8017a73bc3c9)
 서버에 가입한 회원 정보 확인
+![3](https://github.com/user-attachments/assets/4062099e-9e0b-490a-b867-b04ca7a1733b)
+영화 리스트 페이지
