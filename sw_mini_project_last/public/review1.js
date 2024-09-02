@@ -1,106 +1,45 @@
-document.addEventListener('DOMContentLoaded', function() {
-    displayReviews();
+document.addEventListener('DOMContentLoaded', function () {
+    displayReviews(); // 페이지 로드 시 리뷰 표시
 });
 
-document.getElementById('review-form').addEventListener('submit', function(event) {
+document.getElementById('review-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const userId = '익명'; // ID 입력 없이 '익명'으로 설정
-    const reviewText = document.getElementById('review-input').value;
-
+    const reviewText = document.getElementById('review-input').value.trim();
     if (reviewText) {
         const newReview = {
             id: Date.now(),
-            userId: userId,
             text: reviewText,
-            timestamp: new Date().toISOString(),
-            comments: []
+            timestamp: new Date().toISOString() // 리뷰 작성 시 현재 시간 기록
         };
 
-        const reviews = JSON.parse(localStorage.getItem('crime_city_reviews')) || [];
-        reviews.push(newReview);
-        localStorage.setItem('crime_city_reviews', JSON.stringify(reviews));
+        // 로컬 스토리지에서 기존 리뷰 불러오기
+        let reviews = JSON.parse(localStorage.getItem('movie_reviews')) || [];
+        reviews.push(newReview); // 새로운 리뷰 추가
+        localStorage.setItem('movie_reviews', JSON.stringify(reviews)); // 로컬 스토리지에 다시 저장
 
-        displayReviews();
-        document.getElementById('review-input').value = '';
-    } 
+        displayReviews(); // 업데이트된 리뷰 표시
+        document.getElementById('review-input').value = ''; // 입력 필드 초기화
+    }
 });
 
 function displayReviews() {
     const reviewList = document.getElementById('review-list');
-    reviewList.innerHTML = '';
+    reviewList.innerHTML = ''; // 기존 리뷰 목록 초기화
 
-    const reviews = JSON.parse(localStorage.getItem('crime_city_reviews')) || [];
+    // 로컬 스토리지에서 리뷰 목록 불러오기
+    const reviews = JSON.parse(localStorage.getItem('movie_reviews')) || [];
 
-    reviews.forEach(review => {
-        const reviewItem = document.createElement('li');
-        reviewItem.classList.add('review-item');
-
-        const reviewContent = document.createElement('div');
-        reviewContent.classList.add('review-content');
-        reviewContent.innerHTML = `
-            <strong>${review.userId}</strong> <em>${new Date(review.timestamp).toLocaleString()}</em>
-            <p>${review.text}</p>
-        `;
-
-        const commentForm = document.createElement('form');
-        commentForm.classList.add('comment-form');
-        commentForm.innerHTML = `
-            <textarea placeholder="댓글을 남겨주세요..." required></textarea><br>
-            <button type="submit">댓글 달기</button>
-        `;
-
-        commentForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const commentText = commentForm.querySelector('textarea').value;
-
-            if (commentText) {
-                const updatedReviews = reviews.map(r => {
-                    if (r.id === review.id) {
-                        r.comments.push({
-                            id: Date.now(),
-                            userId: '익명',
-                            text: commentText,
-                            timestamp: new Date().toISOString()
-                        });
-                    }
-                    return r;
-                });
-
-                localStorage.setItem('crime_city_reviews', JSON.stringify(updatedReviews));
-                displayReviews();
-            } else {
-                alert('댓글 내용을 입력해 주세요.');
-            }
-        });
-
-        const commentList = document.createElement('ul');
-        commentList.classList.add('comment-list');
-        review.comments.forEach(comment => {
-            const commentItem = document.createElement('li');
-            commentItem.innerHTML = `
-                <strong>${comment.userId}</strong> <em>${new Date(comment.timestamp).toLocaleString()}</em>
-                <p>${comment.text}</p>
+    // 리뷰가 있는 경우만 표시
+    if (reviews.length > 0) {
+        reviews.forEach(review => {
+            const reviewItem = document.createElement('li');
+            reviewItem.classList.add('review-item');
+            reviewItem.innerHTML = `
+                <strong>익명</strong> <em>${new Date(review.timestamp).toLocaleString()}</em>
+                <p>${review.text}</p>
             `;
-            commentList.appendChild(commentItem);
+            reviewList.appendChild(reviewItem);
         });
-
-        reviewItem.appendChild(reviewContent);
-        reviewItem.appendChild(commentForm);
-        reviewItem.appendChild(commentList);
-        reviewList.appendChild(reviewItem);
-    });
-}
-
-function sortReviews(order) {
-    let reviews = JSON.parse(localStorage.getItem('crime_city_reviews')) || [];
-
-    if (order === 'newest') {
-        reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    } else if (order === 'oldest') {
-        reviews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     }
-
-    localStorage.setItem('crime_city_reviews', JSON.stringify(reviews));
-    displayReviews();
 }
