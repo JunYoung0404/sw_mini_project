@@ -8,8 +8,11 @@
 ![3](https://github.com/user-attachments/assets/4062099e-9e0b-490a-b867-b04ca7a1733b)
 영화 리스트 페이지
 ![4](https://github.com/user-attachments/assets/90f8b1fd-e3d0-4eaa-a163-c84f5f918cd6)
-영화 추가
-![5](https://github.com/user-attachments/assets/79d305fb-da7a-4942-8050-d73c91521cd7)
 영화 검색 화면
 ![6](https://github.com/user-attachments/assets/e50eda45-8182-475a-9910-a0f2cde7e548)
+영화 추가
+![5](https://github.com/user-attachments/assets/79d305fb-da7a-4942-8050-d73c91521cd7)
+영화 추가 결과 
+
+
 
